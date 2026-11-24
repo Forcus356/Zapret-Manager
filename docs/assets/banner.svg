@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="360" viewBox="0 0 1280 360" role="img" aria-labelledby="title desc">
+  <title id="title">Forcus Zapret Manager</title>
+  <desc id="desc">Two independent YouTube and Telegram profiles for a Linux VPS. Local SOCKS5, Xray and 3x-ui integration, powered by Zapret2.</desc>
+  <defs>
+    <linearGradient id="background" x2="1" y2="1"><stop stop-color="#0c1424"/><stop offset="1" stop-color="#142638"/></linearGradient>
+    <linearGradient id="accent" x2="1" y2="1"><stop stop-color="#a6f24a"/><stop offset="1" stop-color="#25d4d4"/></linearGradient>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M40 0H0V40" fill="none" stroke="#a3c0dd" stroke-opacity=".055"/></pattern>
+  </defs>
+  <rect width="1280" height="360" rx="24" fill="url(#background)"/>
+  <rect width="1280" height="360" rx="24" fill="url(#grid)"/>
+  <path d="M887 0L714 360M1040 0L867 360" stroke="#2cd6ce" stroke-opacity=".065" stroke-width="90"/>
+  <rect x="52" y="46" width="44" height="44" rx="12" fill="url(#accent)"/>
+  <path d="M65 58H85V64H72V69H82V75H72V81H65Z" fill="#0c1424"/>
+  <text x="110" y="75" fill="#e7f2ff" font-family="DejaVu Sans, sans-serif" font-size="19" font-weight="700" letter-spacing="3">FORCUS</text>
+  <text x="52" y="155" fill="#f4f8ff" font-family="DejaVu Sans, sans-serif" font-size="49" font-weight="700">Zapret Manager</text>
+  <text x="55" y="194" fill="#a6b9ce" font-family="DejaVu Sans, sans-serif" font-size="21">Two profiles. One VPS. Your exit IP.</text>
+  <rect x="54" y="233" width="156" height="39" rx="19.5" fill="#8ce34b" fill-opacity=".12" stroke="#8ce34b" stroke-opacity=".4"/>
+  <text x="132" y="258" text-anchor="middle" fill="#a9f276" font-family="DejaVu Sans, sans-serif" font-size="16">YouTube</text>
+  <rect x="222" y="233" width="156" height="39" rx="19.5" fill="#28d4d1" fill-opacity=".1" stroke="#28d4d1" stroke-opacity=".4"/>
+  <text x="300" y="258" text-anchor="middle" fill="#6ee5e1" font-family="DejaVu Sans, sans-serif" font-size="16">Telegram</text>
+  <text x="55" y="317" fill="#91a7be" font-family="DejaVu Sans, sans-serif" font-size="15">LOCAL SOCKS5  /  XRAY + 3X-UI  /  SYSTEMD</text>
+  <path d="M1000 62L1112 105V186C1112 243 1076 278 1000 304C924 278 888 243 888 186V105Z" fill="#132b37" stroke="url(#accent)" stroke-width="2.5"/>
+  <path d="M1000 85L1091 120V184C1091 230 1062 260 1000 283C938 260 909 230 909 184V120Z" fill="none" stroke="#2cd6ce" stroke-opacity=".13"/>
+  <path d="M963 135H1044V155H986V176H1031V196H986V236H963Z" fill="url(#accent)"/>
+  <circle cx="850" cy="121" r="5" fill="#a6f24a"/><path d="M855 121H887" stroke="#a6f24a" stroke-opacity=".5"/>
+  <circle cx="1150" cy="234" r="5" fill="#25d4d4"/><path d="M1113 234H1145" stroke="#25d4d4" stroke-opacity=".5"/>
+</svg>

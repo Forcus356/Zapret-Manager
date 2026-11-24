@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="870" viewBox="0 0 1100 870" role="img" aria-labelledby="title desc">
+<title id="title">Forcus Zapret Manager console menu</title>
+<desc id="desc">Illustrative output rendered by the actual menu using demonstration profile state. Russian labels.</desc>
+<rect width="1100" height="870" rx="20" fill="#0b1220"/>
+<path d="M20 0H1080Q1100 0 1100 20V58H0V20Q0 0 20 0" fill="#172236"/>
+<circle cx="30" cy="29" r="6" fill="#fb7185"/><circle cx="52" cy="29" r="6" fill="#fbbf24"/><circle cx="74" cy="29" r="6" fill="#8ce34b"/>
+<text x="550" y="35" text-anchor="middle" fill="#a6b6ce" font-family="DejaVu Sans, sans-serif" font-size="15">forcus-zapret · menu preview / demo data</text>
+<text x="30" y="96" xml:space="preserve" font-family="DejaVu Sans Mono, monospace" font-size="15" fill="#8ce34b">FORCUS ZAPRET MANAGER 1.0.0</text>
+<text x="30" y="119" xml:space="preserve" font-family="DejaVu Sans Mono, monospace" font-size="15" fill="#dde7f5"></text>
+<text x="30" y="142" xml:space="preserve" font-family="DejaVu Sans Mono, monospace" font-size="15" fill="#8ce34b">YouTube</text>
+<text x="30" y="165" xml:space="preserve" font-family="DejaVu Sans Mono, monospace" font-size="15" fill="#dde7f5">  SOCKS: 127.0.0.1:10808; интерфейс ens3; очередь 200</text>
+<text x="30" y="188" xml:space="preserve" font-family="DejaVu Sans Mono, monospace" font-size="15" fill="#dde7f5">  forcus-zapret-youtube-socks.service: active; enabled</text>
+<text x="30" y="211" xml:space="preserve" font-family="DejaVu Sans Mono, monospace" font-size="15" fill="#dde7f5">  forcus-zapret-youtube-dpi.service: active; enabled</text>
+<text x="30" y="234" xml:space="preserve" font-family="DejaVu Sans Mono, monospace" font-size="15" fill="#dde7f5">  Zapret2: v1.0.7</text>
+<text x="30" y="257" xml:space="preserve" font-family="DejaVu Sans Mono, monospace" font-size="15" fill="#dde7f5">  Xray: привязан</text>
+<text x="30" y="280" xml:space="preserve" font-family="DejaVu Sans Mono, monospace" font-size="15" fill="#dde7f5">  Проверка: ещё не выполнялась</text>
+<text x="30" y="303" xml:space="preserve" font-family="DejaVu Sans Mono, monospace" font-size="15" fill="#dde7f5"></text>
+<text x="30" y="326" xml:space="preserve" font-family="DejaVu Sans Mono, monospace" font-size="15" fill="#8ce34b">Telegram</text>
+<text x="30" y="349" xml:space="preserve" font-family="DejaVu Sans Mono, monospace" font-size="15" fill="#dde7f5">  SOCKS: 127.0.0.1:10809; интерфейс ens3; очередь 201</text>
+<text x="30" y="372" xml:space="preserve" font-family="DejaVu Sans Mono, monospace" font-size="15" fill="#dde7f5">  forcus-zapret-telegram-socks.service: active; enabled</text>
+<text x="30" y="395" xml:space="preserve" font-family="DejaVu Sans Mono, monospace" font-size="15" fill="#dde7f5">  forcus-zapret-telegram-dpi.service: active; enabled</text>
+<text x="30" y="418" xml:space="preserve" font-family="DejaVu Sans Mono, monospace" font-size="15" fill="#dde7f5">  Zapret2: v1.0.7</text>
+<text x="30" y="441" xml:space="preserve" font-family="DejaVu Sans Mono, monospace" font-size="15" fill="#dde7f5">  MTProto 80/443 → 5222: включено</text>
+<text x="30" y="464" xml:space="preserve" font-family="DejaVu Sans Mono, monospace" font-size="15" fill="#dde7f5">  Xray: привязан</text>
+<text x="30" y="487" xml:space="preserve" font-family="DejaVu Sans Mono, monospace" font-size="15" fill="#dde7f5">  Проверка: ещё не выполнялась</text>
+<text x="30" y="510" xml:space="preserve" font-family="DejaVu Sans Mono, monospace" font-size="15" fill="#dde7f5"></text>
+<text x="30" y="533" xml:space="preserve" font-family="DejaVu Sans Mono, monospace" font-size="15" fill="#dde7f5">1 — Установить профили (Easy / Advanced)</text>
+<text x="30" y="556" xml:space="preserve" font-family="DejaVu Sans Mono, monospace" font-size="15" fill="#dde7f5">2 — Проверить соединения</text>
+<text x="30" y="579" xml:space="preserve" font-family="DejaVu Sans Mono, monospace" font-size="15" fill="#dde7f5">3 — Start / Stop / Restart</text>
+<text x="30" y="602" xml:space="preserve" font-family="DejaVu Sans Mono, monospace" font-size="15" fill="#dde7f5">4 — Журнал</text>
+<text x="30" y="625" xml:space="preserve" font-family="DejaVu Sans Mono, monospace" font-size="15" fill="#dde7f5">5 — Привязать Xray</text>
+<text x="30" y="648" xml:space="preserve" font-family="DejaVu Sans Mono, monospace" font-size="15" fill="#dde7f5">6 — Показать Xray JSON</text>
+<text x="30" y="671" xml:space="preserve" font-family="DejaVu Sans Mono, monospace" font-size="15" fill="#dde7f5">7 — Отключить привязку Xray</text>
+<text x="30" y="694" xml:space="preserve" font-family="DejaVu Sans Mono, monospace" font-size="15" fill="#dde7f5">8 — Удалить профиль</text>
+<text x="30" y="717" xml:space="preserve" font-family="DejaVu Sans Mono, monospace" font-size="15" fill="#dde7f5">9 — Обновить движок Zapret2</text>
+<text x="30" y="740" xml:space="preserve" font-family="DejaVu Sans Mono, monospace" font-size="15" fill="#dde7f5">10 — Резервная копия</text>
+<text x="30" y="763" xml:space="preserve" font-family="DejaVu Sans Mono, monospace" font-size="15" fill="#dde7f5">11 — Полностью удалить менеджер</text>
+<text x="30" y="786" xml:space="preserve" font-family="DejaVu Sans Mono, monospace" font-size="15" fill="#dde7f5">0 — Выход</text>
+<text x="30" y="809" xml:space="preserve" font-family="DejaVu Sans Mono, monospace" font-size="15" fill="#dde7f5">r — Обновить статусы</text>
+</svg>

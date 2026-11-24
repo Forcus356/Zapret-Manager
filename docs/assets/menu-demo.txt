@@ -1,0 +1,35 @@
+ДЕМОНСТРАЦИОННЫЕ ДАННЫЕ / DEMONSTRATION DATA
+Получено из renderer меню 1.0.0 с подставленным состоянием; не рабочий сервер.
+
+FORCUS ZAPRET MANAGER 1.0.0
+
+YouTube
+  SOCKS: 127.0.0.1:10808; интерфейс ens3; очередь 200
+  forcus-zapret-youtube-socks.service: active; enabled
+  forcus-zapret-youtube-dpi.service: active; enabled
+  Zapret2: v1.0.7
+  Xray: привязан
+  Проверка: ещё не выполнялась
+
+Telegram
+  SOCKS: 127.0.0.1:10809; интерфейс ens3; очередь 201
+  forcus-zapret-telegram-socks.service: active; enabled
+  forcus-zapret-telegram-dpi.service: active; enabled
+  Zapret2: v1.0.7
+  MTProto 80/443 → 5222: включено
+  Xray: привязан
+  Проверка: ещё не выполнялась
+
+1 — Установить профили (Easy / Advanced)
+2 — Проверить соединения
+3 — Start / Stop / Restart
+4 — Журнал
+5 — Привязать Xray
+6 — Показать Xray JSON
+7 — Отключить привязку Xray
+8 — Удалить профиль
+9 — Обновить движок Zapret2
+10 — Резервная копия
+11 — Полностью удалить менеджер
+0 — Выход
+r — Обновить статусы

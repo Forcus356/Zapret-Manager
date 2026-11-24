@@ -1,73 +1,106 @@
-# Forcus Zapret Manager
+<p align="center"><img src="docs/assets/banner.svg" alt="Forcus Zapret Manager — YouTube and Telegram for your VPS" width="960"></p>
 
-Установка и управление двумя независимыми профилями **YouTube** и **Telegram** на Linux VPS. Менеджер скачивает проверенную версию Zapret2, устанавливает зависимости, поднимает локальные SOCKS5, создаёт собственные правила nftables и службы systemd. Для Xray/3x-ui предусмотрена автоматическая привязка к выбранным инбаундам с резервной копией и откатом при ошибке.
+<p align="center">
+  <img src="https://img.shields.io/badge/version-1.0.0-8ce34b" alt="Version 1.0.0">
+  <img src="https://img.shields.io/badge/platform-Ubuntu%20%7C%20Debian-2496ed" alt="Ubuntu and Debian">
+  <img src="https://img.shields.io/badge/architecture-x86__64-64748b" alt="x86_64">
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-GPL--3.0--or--later-22c5bb" alt="GPL-3.0-or-later"></a>
+</p>
 
-Меню по подходу похоже на [Forcus Psiphon Auto Pin Manager](https://github.com/Forcus356/Psiphon-Auto-Pin-Manager). Сетевая схема повторяет настроенный и проверенный на российском VPS вариант Dante + Zapret2.
+<h1 align="center">Forcus Zapret Manager</h1>
+<p align="center"><strong>Local SOCKS5 · YouTube + Telegram · Xray / 3x-ui · systemd</strong></p>
+<p align="center">English · <a href="README.ru_RU.md">Русский</a></p>
 
-## Быстрый запуск
+A console manager for two independent **YouTube** and **Telegram** profiles on a Linux VPS. It installs Dante and a checksum-verified Zapret2 engine, creates per-profile services and packet queues, and can connect selected Xray inbounds to the profiles.
 
-Требования: **Ubuntu 22.04+/Debian 12+, x86_64, Python 3.10+, systemd, root и доступ в интернет**. Основная проверка установки выполнена на Ubuntu 24.04. Для автоматической интеграции нужен уже установленный Xray; сам VPN-вход, сертификаты и панель создаются отдельно.
+**Traffic exits through your VPS IP.** For a Russian exit, use a VPS in Russia. The manager does not select a country or establish a foreign tunnel.
 
-Скачай из архива или репозитория файл `install_forcus_zapret.sh` и запусти:
+[Quick start](#quick-start) · [Features](#features) · [Menu](#console-menu) · [Xray](#xray--3x-ui) · [Commands](#command-reference) · [Docs](docs/README.md) · [FAQ](docs/faq.md)
+
+## Quick start
+
+Run in **Bash as root**, or use `sudo` as shown. Requirements: **Ubuntu 22.04+ / Debian 12+, x86_64, systemd, Python 3.10+**, Internet access and a kernel with nftables/NFQUEUE support. Ubuntu 24.04 is the installation-tested environment. Install `curl` first if it is missing.
 
 ```bash
-sudo bash ./install_forcus_zapret.sh
+curl -fsSL https://raw.githubusercontent.com/Forcus356/Zapret-Manager/main/install_forcus_zapret.sh -o /tmp/install_forcus_zapret.sh && sudo bash /tmp/install_forcus_zapret.sh
 ```
 
-Откроется русскоязычное меню. Выбери:
+The installer is self-contained: no clone or pip dependencies are needed. After confirmation, it downloads missing OS packages and the pinned Zapret2 release.
 
-1. **Установить профили** → **Оба профиля**.
-2. Интерфейс — `auto`, дополнительные настройки по желанию.
-3. Для Telegram — режим порта `auto`.
-4. Подтверди установку. После неё мастер предложит подключить выбранные профили к Xray.
-5. Выбери нужные инбаунды отдельно для YouTube и Telegram и подтверди показанный список.
+In the Russian-language menu:
 
-Вернуться в меню:
+1. Select **1 — Установить профили**, then **3 — Оба профиля**.
+2. Keep the interface and Telegram port mode on `auto` to start.
+3. Confirm installation, then choose whether to connect the profiles to Xray.
+4. Select the actual inbounds separately for YouTube and Telegram, review and confirm.
+
+Reopen the menu after installation:
 
 ```bash
 sudo forcus-zapret
 ```
 
-Установщик автономный: в нём уже находится исходный Python-код менеджера. Во время установки из интернета загружаются пакеты ОС и официальный release-архив Zapret2, сверяемый по SHA256. Рядом лежащие файлы проекта для запуска установщика не требуются.
+Xray, its inbound listeners, certificates and panel must already exist for automatic integration. Installing the profiles alone does not change Xray routing.
 
-## Два профиля
+## Features
 
-| Параметр | YouTube | Telegram |
+- Two independent profiles: separate SOCKS ports, service users, systemd services and NFQUEUE numbers.
+- Automatic selection of free ports and queues; explicit conflicting values are rejected.
+- Dante + Zapret2 with the VPS's own outgoing IP.
+- Telegram domain/IP routing and optional MTProto port translation to `5222`.
+- Xray integration with SQLite / PostgreSQL 3x-ui templates or a standalone JSON config.
+- Explicit inbound selection, backups, configuration validation and rollback on apply failure.
+- Status, connection checks, logs, start/stop/restart, engine updates and uninstall from one menu.
+- Loopback-only SOCKS and separate nftables tables; no full firewall flush.
+
+## Two profiles, one VPS
+
+| | YouTube | Telegram |
 |---|---|---|
-| SOCKS по умолчанию | `127.0.0.1:10808` | `127.0.0.1:10809` |
-| Очередь по умолчанию | 200 | 201 |
-| Пользователь | `fzm-yt` | `fzm-tg` |
-| Таблица nftables | `inet fzm_youtube` | `inet fzm_telegram` |
-| Обработка | TLS ClientHello YouTube, fake + multisplit | TLS и MTProto/unknown; UDP passthrough |
-| Привязка Xray | выбранные инбаунды | отдельно выбранные инбаунды |
+| Default SOCKS5 | `127.0.0.1:10808` | `127.0.0.1:10809` |
+| Default NFQUEUE | `200` | `201` |
+| Service user | `fzm-yt` | `fzm-tg` |
+| nftables table | `inet fzm_youtube` | `inet fzm_telegram` |
+| Traffic handling | TLS strategy: fake + multisplit | TLS / MTProto; UDP passthrough |
+| Xray scope | Selected inbounds | Separately selected inbounds |
 
-При занятых стандартных портах и очередях автоматически выбираются свободные. Если порт или очередь заданы явно и заняты, установка останавливается. Существующий профиль при повторной установке сохраняет настройки и не дублируется.
+Ports and queues are defaults. If occupied, alternatives are selected; use `status` for actual endpoints.
 
 ```mermaid
 flowchart LR
-    A[Клиент VPN] --> X[Xray: выбор инбаунда и назначения]
+    C[VPN client] --> X[Xray: selected inbounds]
     X --> Y[YouTube SOCKS5]
     X --> T[Telegram SOCKS5]
-    Y --> QY[Своя NFQUEUE + Zapret2]
-    T --> QT[Другая NFQUEUE + Zapret2]
-    QY --> E[Выходной IP самого VPS]
-    QT --> E
+    Y --> YQ[YouTube NFQUEUE + Zapret2]
+    T --> TQ[Telegram NFQUEUE + Zapret2]
+    YQ --> I[Internet: VPS exit IP]
+    TQ --> I
 ```
 
-**Выходной IP — IP самого VPS.** Для российского выхода нужен VPS в России. Выбор страны и поиск зарубежного туннеля в эту схему не входят.
+YouTube routing blocks matching UDP/443 on the selected inbounds so clients can fall back to TCP. Telegram UDP passes through without UDP desynchronization; calls need a separate device test.
 
-## Установка через CLI
+## Console menu
 
-Оба профиля с автоматическим выбором ресурсов:
+The interface currently uses **Russian labels**. Commands and flags are the same in both guides.
+
+<p align="center"><img src="docs/assets/menu-preview.svg" alt="Illustration of the Russian console menu" width="860"></p>
+
+*Illustrative menu output with demonstration profile state; not a live VPS screenshot.* [Text version](docs/assets/menu-demo.txt).
+
+The menu covers installation, checks, services, logs, Xray binding, JSON export, detach, profile removal, engine updates, backups and full removal. Press `r` to refresh saved status; use **2 — Проверить соединения** for new probes.
+
+## Installation examples
+
+Both profiles, without the wizard:
 
 ```bash
-sudo bash ./install_forcus_zapret.sh install --profile both --yes
+sudo bash /tmp/install_forcus_zapret.sh install --profile both --yes
 ```
 
-По отдельности, со своими портами и очередями:
+YouTube with explicit resources, then Telegram:
 
 ```bash
-sudo bash ./install_forcus_zapret.sh install \
+sudo bash /tmp/install_forcus_zapret.sh install \
   --profile youtube --port 10808 --queue 200 --interface ens3 --yes
 
 sudo forcus-zapret install \
@@ -75,196 +108,120 @@ sudo forcus-zapret install \
   --telegram-port-mode auto --yes
 ```
 
-`--port` и `--queue` разрешены при установке одного профиля. Для разных профилей нужны разные порты и очереди. В режиме `both` используй автоматический выбор или две отдельные команды.
+Replace `ens3` with your interface, or omit `--interface` for automatic detection. `--port` and `--queue` require a single profile; do not use them with `--profile both`.
 
-Установка системных пакетов выполняется через apt. Системный Python и уже настроенный Dante не заменяются. Если пакет Dante устанавливается впервые и его штатной службы/конфига раньше не было, пустая штатная служба отключается: менеджер использует две собственные службы.
+| Installation option | Default | Meaning |
+|---|---|---|
+| `--profile youtube\|telegram\|both` | `both` | Profiles to install |
+| `--interface NAME` | auto | Outgoing interface |
+| `--port N` | free port | SOCKS listener; one profile only |
+| `--queue N` | free queue | NFQUEUE; one profile only |
+| `--telegram-port-mode auto\|off\|5222` | `auto` | Telegram port translation policy |
+| `--yes` | confirmation prompt | Confirm the requested CLI operation |
 
-## Особенность Telegram: порт 5222
+Existing profile settings are retained on repeated installation. [Installation and compatibility →](docs/installation.md)
 
-На исходном российском VPS TCP/443 и TCP/80 к проверенным Telegram DC не открывались, а у DC2 и DC4 работал порт 5222. Одного изменения доменного списка в этой ситуации недостаточно.
+## Xray / 3x-ui
 
-Режимы:
+The manager persists routing to **SQLite / PostgreSQL panel templates** or **standalone JSON**. Hot apply requires the existing Xray local API with **HandlerService + RoutingService**, normally `127.0.0.1:62789`, a usable runtime config and the Xray binary. Referenced geodata must be available to Xray.
 
-| Режим | Поведение |
-|---|---|
-| `auto` | Проверяет TCP/443 и TCP/5222 у двух контрольных DC. Включает перевод, если 443 недоступен, а 5222 доступен хотя бы у одного. Наблюдения сохраняются. |
-| `off` | Сохраняет исходные порты Telegram. |
-| `5222` | Включает перевод подходящих MTProto-соединений принудительно. |
-
-При включённом переводе Xray сохраняет исходный IP Telegram и меняет порт TCP 80/443 на 5222 через `freedom redirect` и локальный SOCKS. Перед этими правилами стоят исключения для распознанного HTTP/TLS. Остальной TCP и UDP направляется в Telegram SOCKS с исходными портами.
-
-Проверка `auto` — первоначальная эвристика доступности портов, а не гарантия работы любого аккаунта или всех DC. Некоторым серверам Telegram 5222 недоступен. Команда `check` показывает фактические ответы каждого из пяти контрольных DC, включая частичный результат.
-
-UDP проходит через отдельную очередь без UDP-десинхронизации. Голосовые/видеозвонки и произвольные P2P-адреса требуют отдельной проверки на устройстве; доменный/IP-список Telegram не определяет любой произвольный IP собеседника.
-
-## Привязка к Xray / 3x-ui
-
-Автоматическое применение поддерживает:
-
-- PostgreSQL: таблица `settings`, ключ `xrayTemplateConfig`.
-- SQLite: тот же ключ в БД 3x-ui.
-- Standalone Xray: настоящий постоянный JSON-конфиг.
-
-Нужно локальное gRPC API Xray с **HandlerService и RoutingService**. По умолчанию используется `127.0.0.1:62789`. Оно должно быть уже включено в установленной версии ядра. Если API или проверка конфига не проходят, менеджер выдаёт ошибку, сохраняя работающие профили. JSON можно подготовить для ручного применения через панель.
-
-Пример для исходной схемы Forcus: Telegram **только** в «Россия» и «Россия YT без рекламы»; YouTube также в двух зарубежных профилях с российским YouTube:
+For example, route YouTube from `ru-main` and `ru-youtube`, but Telegram only from `ru-main`:
 
 ```bash
 sudo forcus-zapret xray apply \
   --backend auto \
-  --youtube-inbounds in-10443-tcp,in-20443-tcp,in-50443-tcp,in-60443-tcp \
-  --telegram-inbounds in-10443-tcp,in-20443-tcp \
+  --youtube-inbounds ru-main,ru-youtube \
+  --telegram-inbounds ru-main \
   --yes
 ```
 
-Это пример тегов исходного сервера. На другой машине выбери свои реальные `inboundTag`. Менеджер не выбирает все инбаунды автоматически.
+**Replace example tags with existing `inboundTag` values.** All inbounds are not selected automatically. The operation backs up and validates the config, applies routing and persists the template; failures trigger rollback, with incomplete rollback reported separately.
 
-Явный PostgreSQL:
-
-```bash
-sudo forcus-zapret xray apply \
-  --backend postgres --database xui --pg-user postgres \
-  --telegram-inbounds in-10443-tcp,in-20443-tcp \
-  --api 127.0.0.1:62789 --yes
-```
-
-Явный SQLite:
+Export a fragment for manual integration without applying it:
 
 ```bash
-sudo forcus-zapret xray apply \
-  --backend sqlite --config /etc/x-ui/x-ui.db \
-  --youtube-inbounds my-ru-inbound --yes
+sudo forcus-zapret xray show \
+  --youtube-inbounds ru-main --telegram-inbounds ru-main
 ```
 
-Standalone:
+`127.0.0.1` must refer to the same network namespace for Xray and Dante. For Xray in Docker, use host networking for this layout. Do not expose the unauthenticated SOCKS listener publicly.
 
-```bash
-sudo forcus-zapret xray apply \
-  --backend standalone --config /usr/local/etc/xray/config.json \
-  --runtime /usr/local/etc/xray/config.json --binary /usr/local/bin/xray \
-  --api 127.0.0.1:62789 --youtube-inbounds my-ru-inbound --yes
-```
+[Backend examples, routing order, sniffing and JSON fragments →](docs/xray/README.md)
 
-В режиме `standalone` нельзя выдавать сгенерированный `/usr/local/x-ui/bin/config.json` за постоянное хранилище панели.
+## Command reference
 
-Применение выполняется так: резервная копия → проверка полного конфига Xray → добавление новых outbounds → применение полного routing → атомарная проверка и запись постоянного шаблона → сохранение runtime. При параллельном изменении шаблона чужое значение не перезаписывается. При ошибке менеджер возвращает прежние правила и удаляет добавленные им обработчики; неполный откат сообщается отдельно.
+| Command | Purpose |
+|---|---|
+| `sudo forcus-zapret` | Open the menu |
+| `sudo forcus-zapret status --profile all` | Services, ports, bindings and saved checks |
+| `sudo forcus-zapret check --profile all` | Fresh connection probes |
+| `sudo forcus-zapret logs --profile telegram --lines 80` | Recent SOCKS/DPI logs |
+| `sudo forcus-zapret start --profile telegram --yes` | Start a profile |
+| `sudo forcus-zapret stop --profile telegram --yes` | Stop a profile |
+| `sudo forcus-zapret restart --profile youtube --yes` | Restart a profile |
+| `sudo forcus-zapret xray show --youtube-inbounds ru-main` | Export routing fragments |
+| `sudo forcus-zapret update-engine --yes` | Verify/apply the default pinned Zapret2 engine |
+| `sudo forcus-zapret backup --output /root/forcus-zapret-backup.tar.gz` | Export a backup |
+| `sudo forcus-zapret xray detach --profile telegram --yes` | Remove a managed Xray binding |
+| `sudo forcus-zapret remove --profile telegram --yes` | Remove a detached profile |
+| `sudo forcus-zapret --help` | CLI help |
 
-Существующие пользовательские правила/выходы сохраняются. Новые правила вставляются после начальных служебных правил API, запрета private IP и исключения gstatic. Для сложной маршрутизации можно указать `--insert-at N` — индекс позиции вставки. Просмотри порядок: первое совпадение выигрывает.
+`install` accepts `both`; lifecycle commands accept `all`. [Updates, backups, paths and diagnostics →](docs/operations.md)
 
-Подготовить JSON без применения:
+## Telegram port mode
 
-```bash
-sudo forcus-zapret xray show --telegram-inbounds my-ru-inbound
+| Mode | Behavior |
+|---|---|
+| `auto` | Probe TCP/443 and TCP/5222 on two control DCs; enable translation when 443 fails but 5222 works for at least one |
+| `off` | Preserve original ports |
+| `5222` | Force eligible MTProto TCP/80 and TCP/443 connections to port 5222 |
 
-sudo forcus-zapret xray prepare \
-  --input /root/xray-before.json --output /root/xray-with-zapret.json \
-  --telegram-inbounds my-ru-inbound
-```
+The destination IP is preserved. Recognized TLS/HTTP is excluded from translation. `auto` is a reachability heuristic, not proof that every DC or call works. [Details →](docs/installation.md#telegram-port-mode)
 
-`show` выдаёт фрагменты, `prepare` — новый полный конфиг. В полный конфиг попадают прежние клиентские данные: храни его с закрытыми правами.
+## Checks and expected results
 
-## Проверки и операции
+`check` compares direct and SOCKS public IPs. YouTube checks HTTPS page reachability. Telegram checks an unauthenticated MTProto response and its nonce across five control DCs, without logging into an account or accessing messages.
 
-```bash
-sudo forcus-zapret status --profile all
-sudo forcus-zapret check --profile all
-sudo forcus-zapret logs --profile telegram --lines 80
-sudo forcus-zapret restart --profile youtube --yes
-sudo forcus-zapret stop --profile telegram --yes
-sudo forcus-zapret start --profile telegram --yes
-sudo forcus-zapret backup --output /root/forcus-zapret-backup.tar.gz
-```
+**Active services are not a video speed test.** Verify long videos and Telegram messages/media on a device through the intended inbound. Provider-specific strategies and arbitrary P2P call destinations may require additional work.
 
-`status` отдельно показывает активность служб, автозапуск, SOCKS-порт, очередь, состояние привязки и сохранённый результат последней проверки.
+Release 1.0.0 has a recorded run of **45 unit tests**, plus isolated Ubuntu 24.04 systemd/NFQUEUE integration checks with real Xray, SQLite and PostgreSQL. These are release results, not a claim that GitHub Actions has already run. [Evidence and limits →](docs/testing.md)
 
-`check` сравнивает IP VPS и SOCKS. Для YouTube проверяет HTTPS-доступность страницы; это не тест скорости видеопотока. Для Telegram отправляет неавторизованный MTProto `req_pq_multi` и проверяет ответ `resPQ` с тем же nonce. Вход в аккаунт, чтение переписки и отправка сообщений не выполняются.
+## Uninstall
 
-Проверка через SOCKS подтверждает прокси-часть цепочки. Для окончательной проверки выбери нужный VPN-профиль на телефоне, переподключись и проверь длинное видео / сообщения / медиа / звонок.
-
-## Обновление Zapret2
-
-Установка закреплена на **v1.0.7** с SHA256:
-
-```text
-547a5dce3f4820721a425680ea3f7f3971b7e9c772b8c795dd2d623148da0928
-```
-
-Проверить и применить известную версию:
-
-```bash
-sudo forcus-zapret update-engine --yes
-```
-
-Для другой версии передай её номер и SHA256 официального `zapret2-vX.Y.Z.tar.gz`:
-
-```text
-forcus-zapret update-engine --engine-version vX.Y.Z --sha256 SHA256_ОФИЦИАЛЬНОГО_АРХИВА --yes
-```
-
-Новый движок сначала скачивается и проверяется со всеми установленными профилями через `--dry-run`. Только затем перезапускаются DPI-службы. При ошибке запуска восстанавливаются прежние unit-файлы. Старые версии движка сохраняются до полного удаления менеджера. Менеджер не обещает автоматический подбор стратегии под любого провайдера.
-
-## Удаление и откат
-
-Сначала отключи привязку к Xray, затем удали профиль:
-
-```bash
-sudo forcus-zapret xray detach --profile telegram --yes
-sudo forcus-zapret remove --profile telegram --yes
-```
-
-Удалить всё:
+Detach managed routing before removal:
 
 ```bash
 sudo forcus-zapret xray detach --profile all --yes
 sudo forcus-zapret uninstall --yes
 ```
 
-Удаление останавливается, если профиль ещё зарегистрирован в привязке или пользовательское правило/outbound ссылается на его SOCKS. Удаляются только собственные службы, файлы и помеченные таблицы. Системные пакеты и резервные копии сохраняются. Полный firewall не очищается.
+To remove Telegram only, use `xray detach --profile telegram --yes`, then `remove --profile telegram --yes`.
 
-Защита привязок относится к настройкам, зарегистрированным через `xray apply`; при `detach` также проверяются оставшиеся ссылки в этом шаблоне. Если SOCKS вручную добавлен в другую программу или другой конфиг, сначала отключи его там самостоятельно. После полного удаления текущее глобальное значение conntrack accounting намеренно не обнуляется.
+Removal is refused while recorded bindings or detected references use a profile. Manually configured consumers outside the managed config must be detached separately. System packages, backups and unrelated firewall tables are retained.
 
-## Файлы и совместимость с ручной установкой
+## Documentation and development
 
-| Путь | Содержимое |
+| | |
 |---|---|
-| `/opt/forcus-zapret/` | код и проверенные версии движка |
-| `/etc/forcus-zapret/state.json` | профили, привязки и результаты проверок; root-only |
-| `/etc/forcus-zapret/*.danted.conf` | независимые Dante-конфиги |
-| `/etc/forcus-zapret/*.nft` | собственные таблицы nftables |
-| `/etc/systemd/system/forcus-zapret-*.service` | службы двух профилей |
-| `/var/cache/forcus-zapret/` | проверенные release-архивы |
-| `/var/backups/forcus-zapret/` | копии до изменений и шаблоны Xray до/после |
+| [Documentation index](docs/README.md) | Installation, operations and troubleshooting; detailed guides are in Russian |
+| [Xray examples](docs/xray/README.md) | Backends and generated JSON fragments |
+| [Test suite](tests/README.md) | Unit tests and isolated integration scenarios |
+| [Testing report](docs/testing.md) | Verified behavior and device/provider-dependent limits |
+| [Security](SECURITY.md) | Exposure model and vulnerability reporting |
+| [Changelog](CHANGELOG.md) | Release history |
+| [Third-party notices](THIRD_PARTY_NOTICES.md) | Components and upstream projects |
 
-Существующая ручная установка с `zapret_dante` / `forcus_telegram` и службами `forcus-youtube-*` / `forcus-telegram-*` сохраняется. Новые имена, пользователи и таблицы отличаются; занятые порты/очереди будут обойдены. Миграция Xray требует явного выбора новых привязок; удаление старой ручной установки выполняется отдельно после проверки.
-
-SOCKS слушает только `127.0.0.1`. Xray в Docker должен находиться в том же сетевом пространстве для использования этого адреса. Для bridge-схемы с другим адресом нужен отдельный проект настройки доступа; открывать SOCKS без пароля на публичном интерфейсе нельзя.
-
-В Dante отдельно запрещены TCP-подключения к loopback, частным, link-local и другим служебным сетям. Профили предназначены для внешних сервисов. Это сохраняет защиту локальных административных портов и при маршрутизации через SOCKS. UDP ASSOCIATE остаётся доступен; тесты звонков по-прежнему выполняются отдельно.
-
-Правила nftables используют `meta l4proto`, охватывая IPv4 и IPv6. Для IPv6 также нужен работающий внешний IPv6-маршрут VPS. Устройства и провайдеры могут вести себя по-разному — проверка сервиса отделена от запуска процессов.
-
-## Разработка и тесты
+From a source checkout, no root privileges are needed for unit tests or builds:
 
 ```bash
 python3 -m unittest discover -s tests -v
 python3 build_installer.py
 bash -n install_forcus_zapret.sh
+python3 build_release.py
 ```
 
-`tests/Dockerfile.systemd` и `tests/container_smoke.py` предназначены для отдельного контейнера с systemd/NFQUEUE. Smoke-тест дополнительно использует настоящий Xray и geodata, проверяет горячую привязку к SQLite/standalone/PostgreSQL, неизменность процесса ядра, повторное применение и отключение привязок. Не запускай `container_smoke.py` на настоящем VPS.
+The standalone installer is generated from `forcus_zapret.py`; rebuild after source changes. `.github/workflows/checks.yml` runs unit tests and verifies the build without installing production VPS services.
 
-Результаты испытаний и их границы: [TESTING.md](TESTING.md).
+Built with [Zapret2](https://github.com/bol-van/zapret2), [Dante](https://www.inet.no/dante/) and [Xray](https://github.com/XTLS/Xray-core). Console workflow inspired by [Forcus Auto-Pin](https://github.com/Forcus356/Psiphon-Auto-Pin-Manager).
 
-Инсталлятор собирается из `forcus_zapret.py`; после изменения Python-кода перегенерируй его. Скрипт не публикует изменения в GitHub сам.
-
-## Источники
-
-- [Официальный Zapret2 v1.0.7](https://github.com/bol-van/zapret2/releases/tag/v1.0.7)
-- [Мануал Zapret2](https://github.com/bol-van/zapret2/blob/v1.0.7/docs/manual.md)
-- [Dante](https://www.inet.no/dante/)
-- [Xray Routing](https://xtls.github.io/en/config/routing.html)
-- [Xray Freedom redirect](https://xtls.github.io/en/config/outbounds/freedom.html)
-- [Транспорты Telegram](https://core.telegram.org/mtproto/transports)
-- [Официальные CIDR Telegram](https://core.telegram.org/resources/cidr.txt)
-
-Лицензия менеджера: GPL-3.0-or-later. Сведения о компонентах: [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+Licensed under [GPL-3.0-or-later](LICENSE).
